@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/language-C%2B%2B-00599C?logo=c%2B%2B&logoColor=white" alt="Language"/>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
   <img src="https://img.shields.io/badge/build-Visual%20Studio%202010-purple?logo=visualstudio&logoColor=white" alt="Build"/>
-  <img src="https://img.shields.io/badge/release-v3.0-orange" alt="Release"/>
+  <img src="https://img.shields.io/badge/release-v1.1-orange" alt="Release"/>
 </p>
 
 <p align="center">

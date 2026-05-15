@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  A lightweight native Win32 utility to block applications from internet access or execution — no installation required.
+  A lightweight utility to block applications from internet access or execution - no installation required.
 </p>
 
 <p align="center">
@@ -24,18 +24,18 @@
 
 ---
 
-## ✨ Features
+## Features
 
-- **Block Firewall** — Creates inbound & outbound Windows Firewall rules to cut off an application's network access
-- **Block Running** — Prevents an application from launching at all using the Image File Execution Options (IFEO) registry method
-- **Block Both** — Applies both methods simultaneously in a single click
-- **Unblock** — Removes all blocking rules for a selected application
-- **Persistent List** — Blocked applications are saved automatically and restored on next launch
-- **Single EXE** — No installation required, no external dependencies
+- **Block Firewall** - Creates inbound & outbound Windows Firewall rules to cut off an application's network access
+- **Block Running** - Prevents an application from launching at all using the Image File Execution Options (IFEO) registry method
+- **Block Both** - Applies both methods simultaneously in a single click
+- **Unblock** - Removes all blocking rules for a selected application
+- **Persistent List** - Blocked applications are saved automatically and restored on next launch
+- **Single EXE** - No installation required, no external dependencies
 
 ---
 
-## 🖥️ Requirements
+## Requirements
 
 | Component | Details |
 |---|---|
@@ -46,9 +46,9 @@
 
 ---
 
-## 🚀 Usage
+## Usage
 
-1. Run `FWBlock.exe` — UAC will automatically request Administrator privileges
+1. Run `FirewallBlocker.exe` — UAC will automatically request Administrator privileges
 2. Click **Browse** to select the `.exe` file you want to block
 3. Choose a blocking method:
    - **Block Firewall** → block network access only
@@ -59,7 +59,7 @@
 
 ---
 
-## 🔧 Building from Source
+## Building from Source
 
 **Requirements:**
 - Visual Studio 2010 or later
@@ -75,7 +75,7 @@
 
 ---
 
-## 🛠️ Technology
+## Technology
 
 | Component | Details |
 |---|---|
@@ -88,7 +88,7 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 FWBlock/
@@ -105,7 +105,7 @@ FWBlock/
 
 ---
 
-## ⚠️ Notes
+## Notes
 
 - **Block Running** modifies `HKEY_LOCAL_MACHINE` registry — Administrator privileges are required
 - The **Windows Firewall service** must be running for firewall blocking to work
@@ -113,7 +113,7 @@ FWBlock/
 
 ---
 
-## ❤️ Sponsor
+## Sponsor
 
 If you find FWBlock useful, consider supporting the development:
 
@@ -121,35 +121,9 @@ If you find FWBlock useful, consider supporting the development:
 
 ---
 
-## 👤 Author
+## Author
 
 **Ari Sohandri Putra**
 [github.com/arisohandriputra/FWBlock](https://github.com/arisohandriputra/FWBlock)
 
 ---
-
-## 📄 License
-
-```
-MIT License
-
-Copyright (c) 2026 Ari Sohandri Putra
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```

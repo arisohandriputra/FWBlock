@@ -57,6 +57,15 @@
 #define IDC_ABOUT_NAME                  2001
 #define IDC_ABOUT_VER                   2002
 #define IDC_ABOUT_DESC                  2003
+#define IDC_ABOUT_LINK                  2004
+
+// Button icon resources
+#define IDI_BTN_BLOCK_FW                3001
+#define IDI_BTN_BLOCK_RUN               3002
+#define IDI_BTN_BLOCK_BOTH              3003
+#define IDI_BTN_UNBLOCK                 3004
+#define IDI_BTN_REFRESH                 3005
+#define IDI_BTN_BROWSE                  3006
 #ifndef IDC_STATIC
 #define IDC_STATIC (-1)
 #endif

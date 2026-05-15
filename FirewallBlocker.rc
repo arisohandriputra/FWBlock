@@ -1,35 +1,21 @@
-// Microsoft Visual C++ generated resource script.
-//
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
 #include "afxres.h"
 
-/////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
-
-/////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 #pragma code_page(1252)
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
 IDI_FIREWALLBLOCKER     ICON                    "res\\app.ico"
 IDI_SMALL               ICON                    "res\\small.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
+IDI_BTN_BLOCK_FW        ICON                    "res\\btn_block_fw.ico"
+IDI_BTN_BLOCK_RUN       ICON                    "res\\btn_block_run.ico"
+IDI_BTN_BLOCK_BOTH      ICON                    "res\\btn_block_both.ico"
+IDI_BTN_UNBLOCK         ICON                    "res\\btn_unblock.ico"
+IDI_BTN_REFRESH         ICON                    "res\\btn_refresh.ico"
+IDI_BTN_BROWSE          ICON                    "res\\btn_browse.ico"
 IDR_MENU_MAIN MENU
 BEGIN
     POPUP "&File"
@@ -45,63 +31,83 @@ BEGIN
         MENUITEM "&About FWBlock...",  IDM_ABOUT
     END
 END
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Main Dialog
-//
-// Layout (dialog units, compact):
-//   Width=390, Height=310
-//   Row1: path label + editbox + browse button
-//   Row2: Block Firewall / Block Running / Block Both  (3 toggle buttons)
-//   Row3: list label + refresh button
-//   Row4: ListView (big)
-//   Row5: status bar
-//
-IDD_FIREWALLBLOCKER_DIALOG DIALOGEX 0, 0, 390, 310
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+IDD_FIREWALLBLOCKER_DIALOG DIALOGEX 0, 0, 418, 338
+STYLE DS_SETFONT | DS_CENTER | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "FWBlock - Firewall & Process Blocker"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+CAPTION "FWBlock  -  Firewall & Process Blocker"
+FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    // ── Path row ──────────────────────────────────────────────────────────────
-    LTEXT           "EXE Path:",IDC_STATIC_PATH,8,10,44,10
-    EDITTEXT        IDC_EDIT_PATH,54,8,260,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_BTN_BROWSE,320,8,62,14
-
-    // ── Block buttons (3 toggle-style) ───────────────────────────────────────
-    PUSHBUTTON      "Block Firewall",IDC_BTN_BLOCK_FW,8,28,116,16
-    PUSHBUTTON      "Block Running",IDC_BTN_BLOCK_RUN,130,28,116,16
-    PUSHBUTTON      "Block Both",IDC_BTN_BLOCK_BOTH,252,28,130,16
-
-    // ── List label + unblock + refresh (same row) ────────────────────────────
-    LTEXT           "Blocked Files:",IDC_STATIC_LIST,8,52,80,10
-    PUSHBUTTON      "Unblock Selected",IDC_BTN_UNBLOCK,228,50,90,14
-    PUSHBUTTON      "Refresh",IDC_BTN_REFRESH,324,50,58,14
-
-    // ── ListView ─────────────────────────────────────────────────────────────
-    CONTROL         "",IDC_LIST_BLOCKED,"SysListView32",LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|WS_BORDER|WS_TABSTOP,8,66,374,226
-
-    // ── Status bar ────────────────────────────────────────────────────────────
-    LTEXT           "Status: Ready",IDC_STATIC_STATUS,8,298,374,10,SS_SUNKEN
+    LTEXT           "FWBlock",IDC_STATIC_TITLE,12,8,120,14,SS_NOPREFIX
+    LTEXT           "Firewall && Process Blocker  |  Administrator Mode",IDC_STATIC_SEP,12,22,390,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,36,402,1
+    LTEXT           "TARGET APPLICATION",IDC_STATIC,10,42,120,9,SS_NOPREFIX
+    LTEXT           "EXE Path:",IDC_STATIC_PATH,10,54,42,10
+    EDITTEXT        IDC_EDIT_PATH,56,52,284,14,ES_AUTOHSCROLL | WS_BORDER
+    PUSHBUTTON      "Browse...",IDC_BTN_BROWSE,346,52,64,18
+    PUSHBUTTON      "Block Firewall",IDC_BTN_BLOCK_FW,10,72,124,18
+    PUSHBUTTON      "Block Running",IDC_BTN_BLOCK_RUN,140,72,124,18
+    PUSHBUTTON      "Block Both",IDC_BTN_BLOCK_BOTH,270,72,140,18
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,98,402,1
+    LTEXT           "BLOCKED APPLICATIONS",IDC_STATIC_LIST,10,104,140,9,SS_NOPREFIX
+    PUSHBUTTON      "Unblock Selected",IDC_BTN_UNBLOCK,256,101,108,16
+    PUSHBUTTON      "Refresh",IDC_BTN_REFRESH,370,101,40,16
+    CONTROL         "",IDC_LIST_BLOCKED,"SysListView32",LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|WS_BORDER|WS_TABSTOP,8,120,402,200
+    LTEXT           "Status: Ready",IDC_STATIC_STATUS,8,326,402,10,SS_SUNKEN | SS_NOPREFIX
 END
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// About Dialog
-//
-IDD_ABOUTBOX DIALOGEX 0, 0, 240, 135
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOGEX 0, 0, 260, 160
+STYLE DS_SETFONT | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About FWBlock"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    ICON            IDI_FIREWALLBLOCKER,IDC_MYICON,10,10,20,20
-    LTEXT           "FWBlock - Firewall & Process Blocker",IDC_ABOUT_NAME,42,10,185,12,SS_NOPREFIX
-    LTEXT           "Version 2.1",IDC_ABOUT_VER,42,24,185,10
-    LTEXT           "Author  :  Ari Sohandri Putra",IDC_ABOUT_DESC,10,40,215,10
-    LTEXT           "Blocks EXE files via Windows Firewall (INetFwPolicy2) and process execution (IFEO registry method). Requires Administrator privileges.",IDC_STATIC,10,56,215,36
-    DEFPUSHBUTTON   "OK",IDOK,90,112,60,16
+    ICON            IDI_FIREWALLBLOCKER,IDC_MYICON,12,12,20,20
+
+    LTEXT           "FWBlock",IDC_ABOUT_NAME,46,12,200,14,SS_NOPREFIX
+    LTEXT           "Firewall && Process Blocker  v1.0",IDC_ABOUT_VER,46,27,200,10
+
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,46,244,1
+
+    LTEXT           "Author  :  Ari Sohandri Putra",IDC_ABOUT_DESC,12,54,236,10
+
+    CONTROL         "<a href=""https://github.com/arisohandriputra/FWBlock"">github.com/arisohandriputra/FWBlock</a>",IDC_ABOUT_LINK,"SysLink",WS_TABSTOP,12,66,236,12
+
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,84,244,1
+
+    LTEXT           "Blocks EXE files via Windows Firewall (INetFwPolicy2) and process execution (IFEO registry method). Requires Administrator privileges.",IDC_STATIC,12,90,236,36,SS_NOPREFIX
+
+    DEFPUSHBUTTON   "OK",IDOK,100,136,60,16
 END
 
-#endif    // English (United States) resources
+#endif   
 
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION      2,1,0,0
+ PRODUCTVERSION   2,1,0,0
+ FILEFLAGSMASK    0x3fL
+#ifdef _DEBUG
+ FILEFLAGS        0x1L
+#else
+ FILEFLAGS        0x0L
+#endif
+ FILEOS           0x40004L
+ FILETYPE         0x1L
+ FILESUBTYPE      0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName",      "Ari Sohandri Putra"
+            VALUE "FileDescription",  "FWBlock - Firewall & Process Blocker"
+            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "InternalName",     "FWBlock"
+            VALUE "LegalCopyright",   "Copyright \251 2026 Ari Sohandri Putra. All Rights Reserved."
+            VALUE "OriginalFilename", "FWBlock.exe"
+            VALUE "ProductName",      "FWBlock"
+            VALUE "ProductVersion",   "1.0.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

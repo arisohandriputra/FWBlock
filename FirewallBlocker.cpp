@@ -185,6 +185,11 @@
 #pragma comment(lib, "oleaut32.lib")
 #pragma comment(lib, "advapi32.lib")
 
+// Enable ComCtl32 v6 for SysLink and visual styles (VS2010 compatible)
+#pragma comment(linker, "\"/manifestdependency:type='win32' \
+name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 
 
 // ─── Globals ──────────────────────────────────────────────────────────────────
@@ -505,28 +510,92 @@ void UpdateBlockButtonLabels(HWND hDlg)
     }
 }
 
+// ─── Center a window on screen ────────────────────────────────────────────────
+void CenterWindowOnScreen(HWND hWnd)
+{
+    RECT rc;
+    GetWindowRect(hWnd, &rc);
+    int w = rc.right  - rc.left;
+    int h = rc.bottom - rc.top;
+    int sw = GetSystemMetrics(SM_CXSCREEN);
+    int sh = GetSystemMetrics(SM_CYSCREEN);
+    SetWindowPos(hWnd, NULL,
+        (sw - w) / 2, (sh - h) / 2,
+        0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
 // ─── About dialog ─────────────────────────────────────────────────────────────
-INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM)
+static HFONT g_hFontAboutTitle  = NULL;
+static HFONT g_hFontAboutSub    = NULL;
+static HFONT g_hFontSectionLabel = NULL;
+
+INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
     case WM_INITDIALOG:
     {
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_FIREWALLBLOCKER));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-        // Make name bold
+
+        // Bold large font for app name
+        if (!g_hFontAboutTitle) {
+            g_hFontAboutTitle = CreateFont(
+                -18, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+                DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+        }
+        // Regular font for subtitle
+        if (!g_hFontAboutSub) {
+            g_hFontAboutSub = CreateFont(
+                -11, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+        }
+
         HWND hName = GetDlgItem(hDlg, IDC_ABOUT_NAME);
-        HFONT hF = CreateFont(14, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"MS Shell Dlg");
-        if (hF) SendMessage(hName, WM_SETFONT, (WPARAM)hF, TRUE);
+        HWND hVer  = GetDlgItem(hDlg, IDC_ABOUT_VER);
+
+        if (g_hFontAboutTitle) SendMessage(hName, WM_SETFONT, (WPARAM)g_hFontAboutTitle, TRUE);
+        if (g_hFontAboutSub)   SendMessage(hVer,  WM_SETFONT, (WPARAM)g_hFontAboutSub,   TRUE);
+
+        // Ensure centered
+        CenterWindowOnScreen(hDlg);
+
         return (INT_PTR)TRUE;
     }
+
+    case WM_NOTIFY:
+    {
+        // Handle SysLink click - open GitHub URL in browser
+        NMHDR* pnm = (NMHDR*)lParam;
+        if (pnm->idFrom == IDC_ABOUT_LINK && pnm->code == NM_CLICK) {
+            NMLINK* pnml = (NMLINK*)lParam;
+            ShellExecuteW(NULL, L"open", pnml->item.szUrl, NULL, NULL, SW_SHOWNORMAL);
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }
         break;
+
+    case WM_CTLCOLORSTATIC:
+    {
+        HDC hdc = (HDC)wParam;
+        HWND hCtrl = (HWND)lParam;
+        int id = GetDlgCtrlID(hCtrl);
+        // Color the app name in accent blue
+        if (id == IDC_ABOUT_NAME) {
+            SetTextColor(hdc, RGB(0, 102, 204));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)GetStockObject(NULL_BRUSH);
+        }
+        return (INT_PTR)FALSE;
+    }
     }
     return (INT_PTR)FALSE;
 }
@@ -596,6 +665,39 @@ bool TryToggleSelected(HWND hDlg, int btnId)
     return false;
 }
 
+// ─── Attach a 16x16 icon to a button keeping text visible (ComCtl32 v6) ───────
+// BCM_SETIMAGELIST places the icon to the left of the button label.
+void SetButtonIcon(HWND hDlg, int btnId, int iconResId)
+{
+    HWND hBtn = GetDlgItem(hDlg, btnId);
+    if (!hBtn) return;
+
+    HICON hIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconResId),
+        IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    if (!hIcon) return;
+
+    // Create a single-slot ImageList and add the icon
+    HIMAGELIST hIL = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 1, 0);
+    if (!hIL) return;
+    ImageList_ReplaceIcon(hIL, -1, hIcon);
+    DestroyIcon(hIcon);
+
+    // BUTTON_IMAGELIST: attach imagelist + set margin + alignment
+    BUTTON_IMAGELIST bil = {0};
+    bil.himl      = hIL;
+    bil.margin.left  = 4;
+    bil.margin.right = 4;
+    bil.uAlign    = BUTTON_IMAGELIST_ALIGN_LEFT;
+    SendMessage(hBtn, BCM_SETIMAGELIST, 0, (LPARAM)&bil);
+    // Note: hIL is owned by the button now (do not destroy until button destroyed)
+}
+
+// ─── Global modern UI fonts ────────────────────────────────────────────────────
+static HFONT g_hFontTitle   = NULL;  // large bold for main title
+static HFONT g_hFontSubtitle = NULL; // small regular for subtitle
+static HFONT g_hFontSection = NULL;  // small caps-style section labels
+static HFONT g_hFontUI      = NULL;  // default Segoe UI for controls
+
 // ─── Main Dialog Procedure ────────────────────────────────────────────────────
 INT_PTR CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -607,6 +709,48 @@ INT_PTR CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
         SendMessage(hDlg, WM_SETICON, ICON_BIG,   (LPARAM)hIcon);
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
+        // Create modern fonts
+        g_hFontTitle = CreateFont(
+            -20, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+
+        g_hFontSubtitle = CreateFont(
+            -10, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+
+        g_hFontSection = CreateFont(
+            -9, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+
+        g_hFontUI = CreateFont(
+            -11, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+
+        // Apply fonts to header controls
+        if (g_hFontTitle)
+            SendDlgItemMessageW(hDlg, IDC_STATIC_TITLE, WM_SETFONT, (WPARAM)g_hFontTitle, TRUE);
+        if (g_hFontSubtitle)
+            SendDlgItemMessageW(hDlg, IDC_STATIC_SEP, WM_SETFONT, (WPARAM)g_hFontSubtitle, TRUE);
+        if (g_hFontSection) {
+            SendDlgItemMessageW(hDlg, IDC_STATIC_LIST, WM_SETFONT, (WPARAM)g_hFontSection, TRUE);
+        }
+
+        // Apply Segoe UI to all main buttons and edit
+        int ctrlIds[] = {
+            IDC_BTN_BROWSE, IDC_BTN_BLOCK_FW, IDC_BTN_BLOCK_RUN,
+            IDC_BTN_BLOCK_BOTH, IDC_BTN_UNBLOCK, IDC_BTN_REFRESH,
+            IDC_EDIT_PATH, IDC_STATIC_PATH, IDC_STATIC_STATUS
+        };
+        for (int i = 0; i < 9; i++) {
+            HWND hCtrl = GetDlgItem(hDlg, ctrlIds[i]);
+            if (hCtrl && g_hFontUI)
+                SendMessage(hCtrl, WM_SETFONT, (WPARAM)g_hFontUI, TRUE);
+        }
+
         // Attach menu
         HMENU hMenu = LoadMenuW(g_hInst, MAKEINTRESOURCE(IDR_MENU_MAIN));
         SetMenu(hDlg, hMenu);
@@ -614,6 +758,17 @@ INT_PTR CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
         SetupListView(GetDlgItem(hDlg, IDC_LIST_BLOCKED));
         LoadList();
         RefreshListView(GetDlgItem(hDlg, IDC_LIST_BLOCKED), g_blockedList);
+
+        // Ensure centered on screen (DS_CENTER should handle this, belt-and-suspenders)
+        CenterWindowOnScreen(hDlg);
+
+        // Attach icons to buttons
+        SetButtonIcon(hDlg, IDC_BTN_BLOCK_FW,   IDI_BTN_BLOCK_FW);
+        SetButtonIcon(hDlg, IDC_BTN_BLOCK_RUN,  IDI_BTN_BLOCK_RUN);
+        SetButtonIcon(hDlg, IDC_BTN_BLOCK_BOTH, IDI_BTN_BLOCK_BOTH);
+        SetButtonIcon(hDlg, IDC_BTN_UNBLOCK,    IDI_BTN_UNBLOCK);
+        SetButtonIcon(hDlg, IDC_BTN_REFRESH,    IDI_BTN_REFRESH);
+        SetButtonIcon(hDlg, IDC_BTN_BROWSE,     IDI_BTN_BROWSE);
 
         if (!IsElevated())
             SetStatus(hDlg, L"WARNING: FWBlock requires Administrator - some features may fail.");
@@ -805,10 +960,38 @@ INT_PTR CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
     }
 
+    case WM_CTLCOLORSTATIC:
+    {
+        HDC hdc = (HDC)wParam;
+        HWND hCtrl = (HWND)lParam;
+        int id = GetDlgCtrlID(hCtrl);
+
+        // Main title in accent blue
+        if (id == IDC_STATIC_TITLE) {
+            SetTextColor(hdc, RGB(0, 102, 204));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)GetStockObject(NULL_BRUSH);
+        }
+        // Subtitle and section labels in grey
+        if (id == IDC_STATIC_SEP || id == IDC_STATIC_LIST) {
+            SetTextColor(hdc, RGB(100, 100, 100));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)GetStockObject(NULL_BRUSH);
+        }
+        return (INT_PTR)FALSE;
+    }
+
     case WM_CLOSE:
         DestroyWindow(hDlg);
         break;
     case WM_DESTROY:
+        // Clean up fonts
+        if (g_hFontTitle)    { DeleteObject(g_hFontTitle);    g_hFontTitle    = NULL; }
+        if (g_hFontSubtitle) { DeleteObject(g_hFontSubtitle); g_hFontSubtitle = NULL; }
+        if (g_hFontSection)  { DeleteObject(g_hFontSection);  g_hFontSection  = NULL; }
+        if (g_hFontUI)       { DeleteObject(g_hFontUI);       g_hFontUI       = NULL; }
+        if (g_hFontAboutTitle) { DeleteObject(g_hFontAboutTitle); g_hFontAboutTitle = NULL; }
+        if (g_hFontAboutSub)   { DeleteObject(g_hFontAboutSub);   g_hFontAboutSub   = NULL; }
         PostQuitMessage(0);
         break;
     }

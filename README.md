@@ -1,6 +1,26 @@
-# 🔒 FWBlock
+<p align="center">
+  <img src="res/app.ico" width="80" height="80" alt="FWBlock Icon"/>
+</p>
 
-**FWBlock** is a lightweight native Windows desktop utility that lets you block applications from accessing the internet or running entirely - all through a simple graphical interface, without manually touching Windows Firewall settings.
+<h1 align="center">FWBlock</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-Windows-blue?logo=windows&logoColor=white" alt="Platform"/>
+  <img src="https://img.shields.io/badge/language-C%2B%2B-00599C?logo=c%2B%2B&logoColor=white" alt="Language"/>
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
+  <img src="https://img.shields.io/badge/build-Visual%20Studio%202010-purple?logo=visualstudio&logoColor=white" alt="Build"/>
+  <img src="https://img.shields.io/badge/release-v1.0-orange" alt="Release"/>
+</p>
+
+<p align="center">
+  A lightweight native Win32 utility to block applications from internet access or execution — no installation required.
+</p>
+
+<p align="center">
+  <a href="https://github.com/sponsors/arisohandriputra">
+    <img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white" alt="Sponsor"/>
+  </a>
+</p>
 
 ---
 
@@ -28,7 +48,7 @@
 
 ## 🚀 Usage
 
-1. Run `FirewallBlocker.exe` — UAC will automatically request Administrator privileges
+1. Run `FWBlock.exe` — UAC will automatically request Administrator privileges
 2. Click **Browse** to select the `.exe` file you want to block
 3. Choose a blocking method:
    - **Block Firewall** → block network access only
@@ -93,6 +113,14 @@ FWBlock/
 
 ---
 
+## ❤️ Sponsor
+
+If you find FWBlock useful, consider supporting the development:
+
+[![Sponsor](https://img.shields.io/badge/Sponsor%20on%20GitHub-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/arisohandriputra)
+
+---
+
 ## 👤 Author
 
 **Ari Sohandri Putra**
@@ -102,4 +130,26 @@ FWBlock/
 
 ## 📄 License
 
-This project is open source. Feel free to use, modify, and distribute.
+```
+MIT License
+
+Copyright (c) 2026 Ari Sohandri Putra
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

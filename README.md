@@ -48,12 +48,12 @@
 
 ## Usage
 
-1. Run `FirewallBlocker.exe` — UAC will automatically request Administrator privileges
+1. Run `FirewallBlocker.exe` - UAC will automatically request Administrator privileges
 2. Click **Browse** to select the `.exe` file you want to block
 3. Choose a blocking method:
-   - **Block Firewall** → block network access only
-   - **Block Running** → prevent the application from launching
-   - **Block Both** → apply both methods at once
+   - **Block Firewall** > block network access only
+   - **Block Running** > prevent the application from launching
+   - **Block Both** > apply both methods at once
 4. The blocked application will appear in the list
 5. Select an item from the list and click **Unblock Selected** to remove the block
 
@@ -84,7 +84,7 @@
 | Firewall API | `INetFwPolicy2` (COM) |
 | Process Block | Image File Execution Options (IFEO) registry |
 | Storage | `%APPDATA%\FirewallBlocker\blocked_list.dat` |
-| Runtime | Statically linked — no MSVCR DLL dependency |
+| Runtime | Statically linked - no MSVCR DLL dependency |
 
 ---
 
@@ -107,7 +107,7 @@ FWBlock/
 
 ## Notes
 
-- **Block Running** modifies `HKEY_LOCAL_MACHINE` registry — Administrator privileges are required
+- **Block Running** modifies `HKEY_LOCAL_MACHINE` registry - Administrator privileges are required
 - The **Windows Firewall service** must be running for firewall blocking to work
 - FWBlock does not collect, store, or transmit any data outside of your local machine
 

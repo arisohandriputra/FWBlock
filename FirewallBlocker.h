@@ -1,83 +1,10 @@
 // =============================================================================
 //  FirewallBlocker.h
 // =============================================================================
-//
-//  FirewallBlocker Main Header File
-//
 //  Author      : Ari Sohandri Putra
 //  Repository  : https://github.com/arisohandriputra/FWBlock
-//
-//  Description :
-//  This header file contains the main declarations, structures,
-//  constants, and function prototypes used throughout the
-//  FirewallBlocker application.
-//
-//  The file serves as the central configuration and interface
-//  layer between the application's source modules, including
-//  firewall management, process execution blocking, utility
-//  helpers, and Win32 GUI handling.
-//
-//  Main Responsibilities :
-//  - Define application block type flags
-//  - Store blocked application information
-//  - Declare firewall management functions
-//  - Declare process restriction functions
-//  - Provide utility helper declarations
-//  - Manage blocked application list access
-//
-//  Blocking System :
-//  FirewallBlocker supports multiple blocking methods:
-//
-//      BLOCK_FIREWALL
-//          Blocks internet/network access using
-//          Windows Firewall rules.
-//
-//      BLOCK_PROCESS
-//          Prevents executable files from running
-//          using system-level process restrictions.
-//
-//      BLOCK_BOTH
-//          Combines firewall and process blocking
-//          simultaneously.
-//
-//  BlockedEntry Structure :
-//  The `BlockedEntry` structure stores all required
-//  information related to blocked applications,
-//  including:
-//
-//      - Full executable path
-//      - File name
-//      - Firewall rule name
-//      - Blocking mode
-//      - Firewall block state
-//      - Process block state
-//
-//  Utility Functions :
-//  Helper functions are used to:
-//
-//      - Extract file names from paths
-//      - Generate firewall rule names
-//      - Refresh list view controls
-//      - Update application status text
-//
-//  Firewall Management :
-//  The firewall functions interact directly with the
-//  Windows Firewall COM API to create, remove, and
-//  validate firewall rules dynamically.
-//
-//  Process Restriction :
-//  Process blocking functions handle executable
-//  restrictions using Windows security and registry
-//  mechanisms such as IFEO or related methods.
-//
-//  Global Variables :
-//  The global vector `g_blockedList` stores all
-//  currently managed blocked applications during
-//  runtime.
-//
 // =============================================================================
 #pragma once
-
 #include "resource.h"
 #include <string>
 #include <vector>
@@ -87,34 +14,68 @@
 #define BLOCK_PROCESS   0x02
 #define BLOCK_BOTH      0x03
 
+// Timer ID for schedule checker
+#define TIMER_SCHEDULE_CHECK  9001
+#define SCHEDULE_CHECK_MS     1000    // check every 1 second (realtime precision)
+
+// Simple password hash (FNV-1a 32-bit) stored as hex string
+std::wstring HashPassword(const std::wstring& pw);
+
 struct BlockedEntry {
     std::wstring filePath;
     std::wstring fileName;
     std::wstring ruleName;
-    int          blockType;   // BLOCK_FIREWALL | BLOCK_PROCESS | BLOCK_BOTH
+    int          blockType;
     bool         fwBlocked;
     bool         procBlocked;
+    std::wstring passwordHash;  // empty = no password
+};
+
+struct ScheduleEntry {
+    std::wstring filePath;
+    std::wstring fileName;
+    int          blockType;
+    SYSTEMTIME   startTime;
+    SYSTEMTIME   endTime;
+    bool         hasEnd;        // false = block forever once triggered
+    bool         triggered;     // has the block been applied?
+    bool         ended;         // has the unblock been applied?
+    std::wstring passwordHash;
 };
 
 // Forward declarations
 INT_PTR CALLBACK MainDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK PasswordDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK UnblockPwDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK ScheduleDlgProc(HWND, UINT, WPARAM, LPARAM);
 
-// Utility functions
+// Utility
 std::wstring GetFileNameFromPath(const std::wstring& path);
 std::wstring GetRuleNameFromPath(const std::wstring& path);
 
-// Firewall functions
+// Firewall
 bool AddFirewallRule(const std::wstring& exePath, const std::wstring& ruleName);
 bool RemoveFirewallRule(const std::wstring& ruleName);
 bool IsFirewallRuleExists(const std::wstring& ruleName);
 
-// Process block functions (AppLocker / Job Object)
+// Process block
 bool BlockProcessExecution(const std::wstring& exePath, const std::wstring& ruleName);
 bool UnblockProcessExecution(const std::wstring& exePath, const std::wstring& ruleName);
 
-// List/View helpers
+// List helpers
 void RefreshListView(HWND hList, const std::vector<BlockedEntry>& entries);
 void SetStatus(HWND hDlg, const std::wstring& msg);
 
-// Global blocked list
-extern std::vector<BlockedEntry> g_blockedList;
+// Autostart
+bool IsAutostartEnabled();
+void SetAutostart(bool enable);
+void ToggleAutostart();
+void UpdateAutostartMenuCheck(HWND hDlg);
+
+// Startup restore
+void ReapplyAllBlocks();
+
+// Globals
+extern std::vector<BlockedEntry>  g_blockedList;
+extern std::vector<ScheduleEntry> g_scheduleList;
+extern HINSTANCE g_hInst;

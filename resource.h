@@ -1,35 +1,3 @@
-// =============================================================================
-//  resource.h
-// =============================================================================
-//
-//  FirewallBlocker Resource Definitions
-//
-//  Author      : Ari Sohandri Putra
-//  Repository  : https://github.com/arisohandriputra/FWBlock
-//
-//  Description :
-//  This file contains all resource identifiers used by the
-//  FirewallBlocker application. These IDs are used to connect
-//  Win32 resources such as dialogs, menus, icons, buttons,
-//  static texts, and controls with the application source code.
-//
-//  Each numeric identifier represents a specific GUI component
-//  or application resource that can be referenced inside the
-//  Win32 API message handling system.
-//
-//  Main Components :
-//  - Application icons
-//  - Main window resources
-//  - Menu resources
-//  - Dialog resources
-//  - Buttons and controls
-//  - List boxes and status labels
-//  - About dialog elements
-//
-//  This file is automatically included by the application and
-//  works together with the resource script (.rc) file.
-//
-// =============================================================================
 #define IDC_MYICON                      2
 #define IDD_FIREWALLBLOCKER_DIALOG      102
 #define IDS_APP_TITLE                   103
@@ -41,6 +9,7 @@
 #define IDC_FIREWALLBLOCKER             109
 #define IDR_MAINFRAME                   128
 #define IDR_MENU_MAIN                   129
+#define IDR_TRAY_MENU                   130
 #define IDC_EDIT_PATH                   1001
 #define IDC_BTN_BROWSE                  1002
 #define IDC_BTN_BLOCK_FW                1003
@@ -58,14 +27,46 @@
 #define IDC_ABOUT_VER                   2002
 #define IDC_ABOUT_DESC                  2003
 #define IDC_ABOUT_LINK                  2004
-
-// Button icon resources
 #define IDI_BTN_BLOCK_FW                3001
 #define IDI_BTN_BLOCK_RUN               3002
 #define IDI_BTN_BLOCK_BOTH              3003
 #define IDI_BTN_UNBLOCK                 3004
 #define IDI_BTN_REFRESH                 3005
 #define IDI_BTN_BROWSE                  3006
+#define IDD_PASSWORD_DIALOG             4001
+#define IDC_EDIT_PASSWORD               4002
+#define IDC_EDIT_PASSWORD_CONFIRM       4003
+#define IDC_STATIC_PW_LABEL             4004
+#define IDC_STATIC_PW_CONFIRM_LABEL     4005
+#define IDC_CHECK_USE_PASSWORD          4006
+#define IDC_STATIC_PW_INFO              4007
+#define IDD_UNBLOCK_PW_DIALOG           4010
+#define IDC_EDIT_UNBLOCK_PW             4011
+#define IDC_STATIC_UNBLOCK_INFO         4012
+#define IDD_SCHEDULE_DIALOG             5001
+#define IDC_CHECK_SCHEDULE_ENABLE       5002
+#define IDC_DATETIME_START              5003
+#define IDC_DATETIME_END                5004
+#define IDC_STATIC_SCHED_START          5005
+#define IDC_STATIC_SCHED_END            5006
+#define IDC_STATIC_SCHED_INFO           5007
+#define IDC_RADIO_BLOCK_FW2             5010
+#define IDC_RADIO_BLOCK_RUN2            5011
+#define IDC_RADIO_BLOCK_BOTH2           5012
+#define IDC_STATIC_BLOCK_TYPE           5013
+#define IDC_EDIT_SCHED_PATH             5014
+#define IDC_BTN_SCHED_BROWSE            5015
+#define IDC_STATIC_SCHED_PATH           5016
+#define IDC_BTN_SCHEDULE                5017
+#define IDC_LIST_SCHEDULES              5018
+#define IDC_BTN_DEL_SCHEDULE            5019
+#define IDC_STATIC_SCHED_LIST           5020
+#define IDM_TRAY_SHOW                   6001
+#define IDM_TRAY_EXIT                   6002
+#define IDM_AUTOSTART                   6003
+#define IDM_TRAY_AUTOSTART              6004
+#define WM_TRAYICON                     (WM_USER + 100)
+#define TRAY_ICON_ID                    1
 #ifndef IDC_STATIC
 #define IDC_STATIC (-1)
 #endif

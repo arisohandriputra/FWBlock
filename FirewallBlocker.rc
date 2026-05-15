@@ -2,86 +2,162 @@
 
 #define APSTUDIO_READONLY_SYMBOLS
 #include "afxres.h"
-
 #undef APSTUDIO_READONLY_SYMBOLS
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 #pragma code_page(1252)
-IDI_FIREWALLBLOCKER     ICON                    "res\\app.ico"
-IDI_SMALL               ICON                    "res\\small.ico"
-IDI_BTN_BLOCK_FW        ICON                    "res\\btn_block_fw.ico"
-IDI_BTN_BLOCK_RUN       ICON                    "res\\btn_block_run.ico"
-IDI_BTN_BLOCK_BOTH      ICON                    "res\\btn_block_both.ico"
-IDI_BTN_UNBLOCK         ICON                    "res\\btn_unblock.ico"
-IDI_BTN_REFRESH         ICON                    "res\\btn_refresh.ico"
-IDI_BTN_BROWSE          ICON                    "res\\btn_browse.ico"
+
+IDI_FIREWALLBLOCKER     ICON    "res\\app.ico"
+IDI_SMALL               ICON    "res\\small.ico"
+IDI_BTN_BLOCK_FW        ICON    "res\\btn_block_fw.ico"
+IDI_BTN_BLOCK_RUN       ICON    "res\\btn_block_run.ico"
+IDI_BTN_BLOCK_BOTH      ICON    "res\\btn_block_both.ico"
+IDI_BTN_UNBLOCK         ICON    "res\\btn_unblock.ico"
+IDI_BTN_REFRESH         ICON    "res\\btn_refresh.ico"
+IDI_BTN_BROWSE          ICON    "res\\btn_browse.ico"
+
 IDR_MENU_MAIN MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "E&xit",                       IDM_EXIT
+        MENUITEM "E&xit",               IDM_EXIT
     END
     POPUP "&Tools"
     BEGIN
-        MENUITEM "&Refresh List",               IDC_BTN_REFRESH
+        MENUITEM "&Refresh List",       IDC_BTN_REFRESH
+        MENUITEM "Scheduled Blocks...", IDC_BTN_SCHEDULE
+        MENUITEM SEPARATOR
+        MENUITEM "Start with Windows",  IDM_AUTOSTART
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About FWBlock...",  IDM_ABOUT
+        MENUITEM "&About FWBlock...",   IDM_ABOUT
     END
 END
-IDD_FIREWALLBLOCKER_DIALOG DIALOGEX 0, 0, 418, 338
+
+IDR_TRAY_MENU MENU
+BEGIN
+    POPUP "TrayMenu"
+    BEGIN
+        MENUITEM "Show FWBlock",        IDM_TRAY_SHOW
+        MENUITEM "Start with Windows",  IDM_TRAY_AUTOSTART
+        MENUITEM SEPARATOR
+        MENUITEM "Exit",                IDM_TRAY_EXIT
+    END
+END
+
+IDD_FIREWALLBLOCKER_DIALOG DIALOGEX 0, 0, 370, 340
 STYLE DS_SETFONT | DS_CENTER | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "FWBlock  -  Firewall & Process Blocker"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    LTEXT           "FWBlock",IDC_STATIC_TITLE,12,8,120,14,SS_NOPREFIX
-    LTEXT           "Firewall && Process Blocker  |  Administrator Mode",IDC_STATIC_SEP,12,22,390,10
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,36,402,1
-    LTEXT           "TARGET APPLICATION",IDC_STATIC,10,42,120,9,SS_NOPREFIX
-    LTEXT           "EXE Path:",IDC_STATIC_PATH,10,54,42,10
-    EDITTEXT        IDC_EDIT_PATH,56,52,284,14,ES_AUTOHSCROLL | WS_BORDER
-    PUSHBUTTON      "Browse...",IDC_BTN_BROWSE,346,52,64,18
-    PUSHBUTTON      "Block Firewall",IDC_BTN_BLOCK_FW,10,72,124,18
-    PUSHBUTTON      "Block Running",IDC_BTN_BLOCK_RUN,140,72,124,18
-    PUSHBUTTON      "Block Both",IDC_BTN_BLOCK_BOTH,270,72,140,18
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,98,402,1
-    LTEXT           "BLOCKED APPLICATIONS",IDC_STATIC_LIST,10,104,140,9,SS_NOPREFIX
-    PUSHBUTTON      "Unblock Selected",IDC_BTN_UNBLOCK,256,101,108,16
-    PUSHBUTTON      "Refresh",IDC_BTN_REFRESH,370,101,40,16
-    CONTROL         "",IDC_LIST_BLOCKED,"SysListView32",LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|WS_BORDER|WS_TABSTOP,8,120,402,200
-    LTEXT           "Status: Ready",IDC_STATIC_STATUS,8,326,402,10,SS_SUNKEN | SS_NOPREFIX
+    LTEXT           "FWBlock",IDC_STATIC_TITLE,10,6,100,14,SS_NOPREFIX
+    LTEXT           "Firewall && Process Blocker  |  Administrator Mode",IDC_STATIC_SEP,10,20,350,9
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,31,358,1
+    LTEXT           "TARGET APPLICATION",IDC_STATIC,8,37,120,9,SS_NOPREFIX
+    LTEXT           "EXE Path:",IDC_STATIC_PATH,8,49,40,10
+    EDITTEXT        IDC_EDIT_PATH,52,47,258,13,ES_AUTOHSCROLL|WS_BORDER
+    PUSHBUTTON      "Browse...",IDC_BTN_BROWSE,316,47,48,13
+    PUSHBUTTON      "Block Firewall",IDC_BTN_BLOCK_FW,8,64,110,14
+    PUSHBUTTON      "Block Running",IDC_BTN_BLOCK_RUN,124,64,110,14
+    PUSHBUTTON      "Block Both",IDC_BTN_BLOCK_BOTH,240,64,124,14
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,82,358,1
+    LTEXT           "BLOCKED APPLICATIONS",IDC_STATIC_LIST,8,88,140,9,SS_NOPREFIX
+    PUSHBUTTON      "Unblock",IDC_BTN_UNBLOCK,186,85,60,13
+    PUSHBUTTON      "Schedule",IDC_BTN_SCHEDULE,252,85,58,13
+    PUSHBUTTON      "Refresh",IDC_BTN_REFRESH,316,85,48,13
+    CONTROL         "",IDC_LIST_BLOCKED,"SysListView32",LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|WS_BORDER|WS_TABSTOP,6,101,358,156
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,262,358,1
+    LTEXT           "SCHEDULED BLOCKS",IDC_STATIC_SCHED_LIST,8,268,140,9,SS_NOPREFIX
+    PUSHBUTTON      "Delete",IDC_BTN_DEL_SCHEDULE,316,265,48,13
+    CONTROL         "",IDC_LIST_SCHEDULES,"SysListView32",LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|WS_BORDER|WS_TABSTOP,6,280,358,46
+    LTEXT           "Status: Ready",IDC_STATIC_STATUS,6,330,358,9,SS_SUNKEN|SS_NOPREFIX
 END
-IDD_ABOUTBOX DIALOGEX 0, 0, 260, 160
+
+IDD_PASSWORD_DIALOG DIALOGEX 0, 0, 260, 120
+STYLE DS_SETFONT | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Password Protection"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Set a password to protect this block. Leave blank for no password.",IDC_STATIC_PW_INFO,8,8,244,16,SS_NOPREFIX
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,26,248,1
+    CONTROL         "Use password protection",IDC_CHECK_USE_PASSWORD,"Button",BS_AUTOCHECKBOX|WS_TABSTOP,8,32,200,12
+    LTEXT           "Password:",IDC_STATIC_PW_LABEL,8,50,52,10
+    EDITTEXT        IDC_EDIT_PASSWORD,66,48,186,13,ES_AUTOHSCROLL|ES_PASSWORD|WS_BORDER
+    LTEXT           "Confirm:",IDC_STATIC_PW_CONFIRM_LABEL,8,66,52,10
+    EDITTEXT        IDC_EDIT_PASSWORD_CONFIRM,66,64,186,13,ES_AUTOHSCROLL|ES_PASSWORD|WS_BORDER
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,82,248,1
+    DEFPUSHBUTTON   "OK",IDOK,116,90,60,16
+    PUSHBUTTON      "Cancel",IDCANCEL,182,90,60,16
+END
+
+IDD_UNBLOCK_PW_DIALOG DIALOGEX 0, 0, 240, 90
+STYLE DS_SETFONT | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Password Required"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "This entry is password-protected. Enter the password to unblock.",IDC_STATIC_UNBLOCK_INFO,8,8,224,16,SS_NOPREFIX
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,26,228,1
+    LTEXT           "Password:",IDC_STATIC,8,38,48,10
+    EDITTEXT        IDC_EDIT_UNBLOCK_PW,60,36,172,13,ES_AUTOHSCROLL|ES_PASSWORD|WS_BORDER
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,54,228,1
+    DEFPUSHBUTTON   "OK",IDOK,98,62,60,16
+    PUSHBUTTON      "Cancel",IDCANCEL,164,62,60,16
+END
+
+IDD_SCHEDULE_DIALOG DIALOGEX 0, 0, 310, 194
+STYLE DS_SETFONT | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Schedule Block"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Schedule a program to be blocked automatically at a set time.",IDC_STATIC_SCHED_INFO,8,6,294,10,SS_NOPREFIX
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,18,298,1
+    LTEXT           "EXE Path:",IDC_STATIC_SCHED_PATH,8,26,42,10
+    EDITTEXT        IDC_EDIT_SCHED_PATH,54,24,204,13,ES_AUTOHSCROLL|WS_BORDER
+    PUSHBUTTON      "Browse...",IDC_BTN_SCHED_BROWSE,264,24,40,13
+    LTEXT           "Block Type:",IDC_STATIC_BLOCK_TYPE,8,42,50,10
+    CONTROL         "Firewall",IDC_RADIO_BLOCK_FW2,"Button",BS_AUTORADIOBUTTON|WS_GROUP,62,41,52,10
+    CONTROL         "Running",IDC_RADIO_BLOCK_RUN2,"Button",BS_AUTORADIOBUTTON,118,41,52,10
+    CONTROL         "Both",IDC_RADIO_BLOCK_BOTH2,"Button",BS_AUTORADIOBUTTON,174,41,40,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,54,298,1
+    LTEXT           "Block Start:",IDC_STATIC_SCHED_START,8,62,50,10
+    CONTROL         "",IDC_DATETIME_START,"SysDateTimePick32",DTS_SHORTDATEFORMAT|WS_TABSTOP,62,60,140,13
+    LTEXT           "Block End:",IDC_STATIC_SCHED_END,8,80,50,10
+    CONTROL         "",IDC_DATETIME_END,"SysDateTimePick32",DTS_SHORTDATEFORMAT|WS_TABSTOP,62,78,140,13
+    LTEXT           "(End <= Start = block permanently once triggered)",IDC_STATIC,8,94,294,10,SS_NOPREFIX
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,106,298,1
+    LTEXT           "Password (optional):",IDC_STATIC,8,114,86,10
+    EDITTEXT        IDC_EDIT_PASSWORD,98,112,140,13,ES_AUTOHSCROLL|ES_PASSWORD|WS_BORDER
+    LTEXT           "Confirm:",IDC_STATIC,8,130,46,10
+    EDITTEXT        IDC_EDIT_PASSWORD_CONFIRM,98,128,140,13,ES_AUTOHSCROLL|ES_PASSWORD|WS_BORDER
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,146,298,1
+    DEFPUSHBUTTON   "Add Schedule",IDOK,150,156,74,16
+    PUSHBUTTON      "Cancel",IDCANCEL,230,156,74,16
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 240, 154
 STYLE DS_SETFONT | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About FWBlock"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    ICON            IDI_FIREWALLBLOCKER,IDC_MYICON,12,12,20,20
-
-    LTEXT           "FWBlock",IDC_ABOUT_NAME,46,12,200,14,SS_NOPREFIX
-    LTEXT           "Firewall && Process Blocker  v1.0",IDC_ABOUT_VER,46,27,200,10
-
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,46,244,1
-
-    LTEXT           "Author  :  Ari Sohandri Putra",IDC_ABOUT_DESC,12,54,236,10
-
-    CONTROL         "<a href=""https://github.com/arisohandriputra/FWBlock"">github.com/arisohandriputra/FWBlock</a>",IDC_ABOUT_LINK,"SysLink",WS_TABSTOP,12,66,236,12
-
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,8,84,244,1
-
-    LTEXT           "Blocks EXE files via Windows Firewall (INetFwPolicy2) and process execution (IFEO registry method). Requires Administrator privileges.",IDC_STATIC,12,90,236,36,SS_NOPREFIX
-
-    DEFPUSHBUTTON   "OK",IDOK,100,136,60,16
+    ICON            IDI_FIREWALLBLOCKER,IDC_MYICON,10,10,20,20
+    LTEXT           "FWBlock",IDC_ABOUT_NAME,40,10,180,14,SS_NOPREFIX
+    LTEXT           "Firewall && Process Blocker  v1.1",IDC_ABOUT_VER,40,25,180,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,40,228,1
+    LTEXT           "Author  :  Ari Sohandri Putra",IDC_ABOUT_DESC,10,48,220,10
+    CONTROL         "<a href=""https://github.com/arisohandriputra/FWBlock"">github.com/arisohandriputra/FWBlock</a>",IDC_ABOUT_LINK,"SysLink",WS_TABSTOP,10,60,220,12
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,6,76,228,1
+    LTEXT           "Blocks EXE files via Windows Firewall (INetFwPolicy2) and process execution (IFEO). Supports Scheduled Blocking and Password Protection. Requires Administrator.",IDC_STATIC,10,82,220,44,SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,88,130,60,16
 END
 
-#endif   
+#endif
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION      2,1,0,0
- PRODUCTVERSION   2,1,0,0
+ FILEVERSION      2,0,0,0
+ PRODUCTVERSION   2,0,0,0
  FILEFLAGSMASK    0x3fL
 #ifdef _DEBUG
  FILEFLAGS        0x1L
@@ -98,12 +174,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "Ari Sohandri Putra"
             VALUE "FileDescription",  "FWBlock - Firewall & Process Blocker"
-            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "FileVersion",      "1.1.0.0"
             VALUE "InternalName",     "FWBlock"
             VALUE "LegalCopyright",   "Copyright \251 2026 Ari Sohandri Putra. All Rights Reserved."
             VALUE "OriginalFilename", "FWBlock.exe"
             VALUE "ProductName",      "FWBlock"
-            VALUE "ProductVersion",   "1.0.0.0"
+            VALUE "ProductVersion",   "1.1.0.0"
         END
     END
     BLOCK "VarFileInfo"
